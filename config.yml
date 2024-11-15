@@ -1,0 +1,30 @@
+---
+- name: Build Docker Image with Web and DB Servers
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Install docker
+      apt:
+       name: docker.io
+       state: latest
+
+    - name: enable and start docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Copy Dockerfile to build directory
+      copy:
+        src: /home/gapisa/activity11/dockerfile/
+        dest: /home/gapisa/Dockerfile
+        state: present
+
+    - name: Build Docker image
+      docker_image:
+        name: web_image
+        source: build
+        build:
+          path: /home/gapisa
+        state: present
